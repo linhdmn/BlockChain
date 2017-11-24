@@ -1,9 +1,10 @@
+import ReactDOM from 'react-dom';
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import Login from './login';
 import Register from './signup';
-class Loginscreen extends Component {
+class Loginscreen extends React.Component {
   constructor(props){
     super(props);
     this.state={

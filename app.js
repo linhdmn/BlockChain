@@ -4,10 +4,13 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 
+var db = require('./db');
 var index = require('./routes/index');
 var account = require('./routes/api/account');
 var wallet = require('./routes/api/wallet');
+var auth = require('./routes/auth');
 
 var app = express();
 
@@ -23,16 +26,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-var mongoose = require('mongoose');
 // Use native Node promises
-// connect to MongoDB
-var promise = mongoose.connect('mongodb://localhost/BlockChain',{
-  useMongoClient: true,
-}).then(console.log('test: database connected!')).catch((err) => console.error(err));
 
 app.use('/', index);
 app.use('/api/account', account);
 app.use('/api/wallet', wallet);
+app.use('/api/auth', auth);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

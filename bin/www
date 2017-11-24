@@ -7,13 +7,12 @@
 var app = require('../app');
 var debug = require('debug')('blockchain:server');
 var http = require('http');
-var config = require('../config.js');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || config.expressPort);
+var port = normalizePort(process.env.PORT || 3001);
 app.set('port', port);
 
 /**
