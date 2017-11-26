@@ -16,8 +16,9 @@ import axios from 'axios';
 import Dashboard from './Dashboard';
 import DrawerOpen from './components/DrawerOpen';
 import Login from './Login';
+import fakeAuth from './auth';
 
-var apiBaseUrl = "http://localhost:3001/api/auth/register";
+var apiBaseUrl = "http://localhost:3001/api/auth/";
 
 class Register extends Component{
   constructor(props){
@@ -67,6 +68,7 @@ class Register extends Component{
       loginButton:loginButton,
       registerComponent:registerComponent,
       login:true,
+      logged:false
     }
   }
   buttonClick(e){
@@ -92,14 +94,13 @@ class Register extends Component{
        console.log(response);
        if(response.status == 200){
         //  console.log("registration successfull");
-         var loginscreen=[];
-         loginscreen.push(<Login parentContext={this} appContext={self.props.appContext}/>);
-         var loginmessage = "Not Registered yet.Go to registration";
-         self.props.parentContext.setState({loginscreen:loginscreen,
-         loginmessage:loginmessage,
-         buttonLabel:"Register",
-         isLogin:true
-          });
+         
+          fakeAuth.authenticate(() => {
+            self.setState({ 
+              logged: true
+             })
+            });
+            localStorage.setItem("email", this.state.email);
        }
        else{
          console.log("some error ocurred",response.status);
@@ -115,6 +116,11 @@ class Register extends Component{
 
   }
   render() {
+    if(this.state.logged){
+      return(
+        <Redirect to='/dashboard'/>
+      )
+    }
     if(this.state.login){
       return (
         <div>

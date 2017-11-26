@@ -5,7 +5,7 @@ import {
   Link,
   Redirect,
   withRouter
-} from 'react-router-dom';
+} from 'react-router-dom'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -15,6 +15,7 @@ import MenuItem from 'material-ui/MenuItem';
 import axios from 'axios';
 import Dashboard from './Dashboard';
 import DrawerOpen from './components/DrawerOpen';
+import fakeAuth from './auth';
 
 var apiBaseUrl = "http://localhost:3001/api/auth/";
 class Login extends Component {
@@ -52,6 +53,7 @@ class Login extends Component {
        </MuiThemeProvider>
     )
     this.state={
+      message:'',
       loginmessage:'Not registered yet, Register Now',
       username:'',
       password:'',
@@ -67,10 +69,10 @@ class Login extends Component {
     this.setState({
                   loginmessage:loginmessage,
                   register:true,
-                  topBar:'Login'
+                  topBar:'Login',
+                  logged:this.props.logged
                     })
   }
-
   buttonClick(e){
     var self = this;
     this.setState({
@@ -79,37 +81,58 @@ class Login extends Component {
   }
   handleClick(event){
     var self = this;
-    this.setState({
-      logged: true
-    })
-    axios({
-      method:'post',
-      url: apiBaseUrl + 'login',
-      data:{
-        email: this.state.username,
-        password: this.state.password
-      }
-    })
-   .then(function (response) {
-     console.log(response);
-     if(response.status == 200){
-       console.log("Login successfull");
-       this.setState({
-         logged: true
-       })
-     }
-     else if(response.status == 204){
-       console.log("Username password do not match");
-       alert(response.data.success)
-     }
-     else{
-       console.log("Username does not exists");
-       alert("Username does not exist");
-     }
-   })
-   .catch(function (error) {
-     console.log(error);
-   });
+    // this.setState({
+    //   logged: true
+    // })
+    if(this.state.username.length>0 && this.state.password.length>0){
+      axios({
+        method:'post',
+        url: apiBaseUrl + 'login',
+        data:{
+          email: this.state.username,
+          password: this.state.password
+        }
+      })
+     .then(function (response) {
+       console.log(response);
+       if(response.status == 200){
+         console.log("Login successfull");
+        //  self.setState({
+        //    logged: true
+        //  });
+         fakeAuth.authenticate(() => {
+          self.setState({ logged: true })
+          });
+          localStorage.setItem("email", this.state.username);
+         console.log(self.state.logged);
+       }
+       else if(response.status == 204){
+         console.log("Username password do not match");
+         self.setState({
+           message:"Email or password doesn't right"
+         })
+         alert(response.data.success)
+       }
+       else{
+         console.log("Username does not exists");
+         
+        self.setState({
+          message:"Email or password wrong!"
+        })
+         alert("Username does not exist");
+       }
+     })
+     .catch(function (error) {
+      self.setState({
+        message:"Email or password doesn't right"
+      })
+       console.log(error);
+     });
+    }
+    else{
+      alert("Input field value is missing");
+    }
+    
   }
   render() {
     if(this.state.logged){
@@ -127,6 +150,7 @@ class Login extends Component {
             {this.state.loginComponent}
             {this.state.loginmessage}
             {this.state.loginButton}
+            {this.state.message}
           </div>
         );
       }

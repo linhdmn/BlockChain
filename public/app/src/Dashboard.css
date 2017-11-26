@@ -1,4 +1,8 @@
 .App {
     text-align: center;
   }
-  
+.head{
+  width: 80% !important;
+  margin: 0 auto !important;
+  text-align: center;
+}

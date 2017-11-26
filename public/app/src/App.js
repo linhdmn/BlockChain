@@ -12,16 +12,31 @@ import './App.css';
 import Login from './Login';
 import Register from './Register';
 import Dashboard from './Dashboard';
+import Home from './Home';
+import fakeAuth from './auth'; 
 
 const style = {
   margin: 15,
 };
+
+const PrivateRoute = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={props => (
+    fakeAuth.isAuthenticated ? (
+      <Component {...props}/>
+    ) : (
+      <Redirect to={{
+        pathname: '/login',
+        state: { from: props.location }
+      }}/>
+    )
+  )}/>
+)
 const App = () =>{
   return (
     <Router>
     <div>
       <div className="App">
-        <Route exact path="/" exact component={Login}/>
+        <Route exact path="/" exact component={Home}/>
       </div>
       <div className="App">
         <Route path="/login" exact component={Login}/>
@@ -29,7 +44,7 @@ const App = () =>{
       <div className="App">
         <Route path="/register" exact component={Register}/>
       </div>
-      <Route path="/dashboard" component={Dashboard}/>
+      <PrivateRoute exact path="/dashboard" component={Dashboard}/>
     </div>
     </Router>
   );

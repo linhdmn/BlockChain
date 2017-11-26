@@ -11,6 +11,7 @@ var index = require('./routes/index');
 var account = require('./routes/api/account');
 var wallet = require('./routes/api/wallet');
 var auth = require('./routes/auth');
+var transaction = require('./routes/api/transactions');
 
 var app = express();
 
@@ -32,6 +33,7 @@ app.use('/', index);
 app.use('/api/account', account);
 app.use('/api/wallet', wallet);
 app.use('/api/auth', auth);
+app.use('/api/transaction', transaction);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

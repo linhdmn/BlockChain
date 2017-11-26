@@ -49,7 +49,7 @@ router.post('/register', function(req, res) {
   var _idWallet = md5(req.body.email);
   Wallet.create({
     idwallet : _idWallet,
-    accountbalance : 0
+    accountbalance : 1000
   });
   User.create({
     email : req.body.email,
@@ -69,6 +69,7 @@ router.post('/register', function(req, res) {
   });
 
 });
+
 
 router.get('/me', function(req, res, next) {
 
