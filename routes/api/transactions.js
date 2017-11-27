@@ -5,56 +5,39 @@ var router = express.Router();
 // var VerifyToken = require(__root + 'auth/VerifyToken');
 
 // router.use(bodyParser.urlencoded({ extended: true }));
-var User = require('../../schema/user');
-var Wallet = require('../../schema/wallet');
 var Transaction = require('../../schema/transactions');
 // CREATES A TRANSACTION
 router.post('/', function (req, res) {
-    User.findOne({ idwalletSender: req.body.sender }, 
-        function (err, user) {
-        if (err) return res.status(500).send('Error on the server.');
-        if (!user) return res.status(404).send('No user found.');
-        
-        // check if the password is valid
-        var passwordIsValid = bcrypt.compareSync(req.body.password, 
-            user.password);
-        if (!passwordIsValid) return res.status(401).send({ auth: false, 
-            token: null });
-        Wallet.findOne({idwallet: req.body.sender}, 
-            function(err, money){
-                if(err) return res.status(500).send('Error on the server.');
-                if(!money) return res.status(404).send('no wallet exist!');
-
-                if(money.money >= req.body.money){
-                    Transaction.create({
-                        idwalletSender: req.body.sender,
-                        idwalletReceiver: req.body.receiver,
-                        money: req.body.money
-                        }, 
-                        function (err, transactions) {
-                            if (err) return res.status(500).send("There was a problem adding the information to the database.");
-                            res.status(200).send(transactions);
-                        });
-                    Wallet.findOne({idwallet:idwalletSender}, 
-                        function(err, wallet){
-                            if(err) return res.status(500).send("err");
-                            res.status(200).send
-                    })
-                }
-        })
-        // if user is found and password is valid
-        // create a token
-        var token = jwt.sign({ id: user._id }, config.secret, {
-          expiresIn: 86400 // expires in 24 hours
-        });
-    
-        // return the information including token as JSON
-        res.status(200).send({ auth: true, token: token });
-      });
-    
-    
+    Transaction.create({
+        idwalletSender:req.body.sender,
+        idwalletReceiver:req.body.receiver,
+        money:req.body.money
+    }, function(err, transaction){
+        if(err) return res.status(500).send("Oppss");
+        res.status(200).send(transaction);
+    })
 });
 
+router.post('/findSentByUser', function(req, res){
+    Transaction.find({idwalletSender: req.body.idwallet}, function(err, transaction){
+        if(err) return res.status(500).send("Ooppss!!");
+        res.status(200).send(transaction);
+    })
+})
+
+router.post('/findReceiveByUser', function(req, res){
+    Transaction.find({idwalletReceiver: req.body.idwallet}, function(err, transaction){
+        if(err) return res.status(500).send("Ooppss!!");
+        res.status(200).send(transaction);
+    })
+})
+
+router.get('/getAll', function(req, res){
+    Transaction.find({}, function(err, data){
+        if(err) return res.status(500).send("Oppsss!");
+        res.status(200).send(data);
+    })
+})
 
 // RETURNS  THE USER Transaction IN THE DATABASE
 router.get('/', function (req, res) {
