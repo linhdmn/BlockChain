@@ -19,9 +19,9 @@ router.post('/', function (req, res) {
 });
 
 router.post('/findSentByUser', function(req, res){
-    Transaction.find({idwalletSender: req.body.idwallet}, function(err, transaction){
+    Transaction.find({idwalletSender: req.body.idwallet}, function(err, data){
         if(err) return res.status(500).send("Ooppss!!");
-        res.status(200).send(transaction);
+        res.status(200).send(data);
     })
 })
 
