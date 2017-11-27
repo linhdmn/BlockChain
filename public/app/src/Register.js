@@ -100,7 +100,7 @@ class Register extends Component{
               logged: true
              })
             });
-            localStorage.setItem("email", this.state.email);
+            localStorage.setItem("email", self.state.email);
        }
        else{
          console.log("some error ocurred",response.status);

@@ -22,7 +22,7 @@ router.post('/', function (req, res) {
 });
 
 router.post('/find', function(req, res){
-    User.find({idwallet:req.body.idwallet}, 
+    User.find({email:req.body.email}, 
         function (err, users) {
             if (err) return res.status(500).send("There was a problem finding the users.");
             res.status(200).send(users);

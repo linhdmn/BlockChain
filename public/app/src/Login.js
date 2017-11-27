@@ -103,7 +103,7 @@ class Login extends Component {
          fakeAuth.authenticate(() => {
           self.setState({ logged: true })
           });
-          localStorage.setItem("email", this.state.username);
+          localStorage.setItem("email", self.state.username);
          console.log(self.state.logged);
        }
        else if(response.status == 204){

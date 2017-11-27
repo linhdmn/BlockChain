@@ -35,6 +35,11 @@ router.post('/', function (req, res) {
                             if (err) return res.status(500).send("There was a problem adding the information to the database.");
                             res.status(200).send(transactions);
                         });
+                    Wallet.findOne({idwallet:idwalletSender}, 
+                        function(err, wallet){
+                            if(err) return res.status(500).send("err");
+                            res.status(200).send
+                    })
                 }
         })
         // if user is found and password is valid

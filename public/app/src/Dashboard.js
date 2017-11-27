@@ -8,7 +8,6 @@ import Paper from 'material-ui/Paper';
 
 import axios from 'axios';
 import './Dashboard.css';
-
 var userURL = "http://localhost:3001/api/account/";
 var walletURL= "http://localhost:3001/api/wallet/";
 
@@ -26,10 +25,14 @@ class Dashboard extends Component{
         }
     }
     componentWillMount(){
-        email = localStorage.getItem("email");
+        var self = this;
+        var email = localStorage.getItem("email");
+        console.log(email);
+        var balances=0;
+        var idwallet;
         axios({
             method: 'post',
-            url: userURL + 'register',
+            url: userURL + 'find',
             data: {
               email: email
             }
@@ -38,12 +41,30 @@ class Dashboard extends Component{
            console.log(response);
            if(response.status == 200){
             //  console.log("registration successfull");
-             
-              fakeAuth.authenticate(() => {
-                self.setState({ 
-                  logged: true
-                 })
-                });
+            idwallet = response.data[0].idwallet;
+            console.log(idwallet);
+            axios({
+                method:'post',
+                url: walletURL,
+                data:{
+                    idwallet:idwallet
+                }
+            })
+            .then(function(res){
+                console.log(res);
+                if(res.status==200){
+                    balances = res.data[0].accountbalance;
+                    self.setState({
+                        money: balances
+                    })
+                }
+                else{
+                    console.log("some error ocurred",response.status);
+                  }
+            })
+            .catch(function (error) {
+                console.log(error);
+              });
            }
            else{
              console.log("some error ocurred",response.status);
